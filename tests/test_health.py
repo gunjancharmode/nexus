@@ -7,7 +7,7 @@ from backend.main import app
 client = TestClient(app)
 
 
-def test_health_check_returns_success():
+def test_health_check_returns_success(client):
     response = client.get("/api/v1/health")
 
     assert response.status_code == 200
@@ -16,3 +16,4 @@ def test_health_check_returns_success():
         "service": "nexus-api",
         "version": "0.1.0",
     }
+
