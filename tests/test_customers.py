@@ -118,7 +118,7 @@ def test_list_customers_pagination_returns_correct_records(client):
 def test_list_customers_returns_sucess(client):
     response = client.get("/api/v1/customers")
 
-    assert response.ststus_code == 200
+    assert response.status_code == 200
     assert isinstance(response.json(),list)
 
 
