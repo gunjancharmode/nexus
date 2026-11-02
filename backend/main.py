@@ -1,5 +1,6 @@
 import httpx
 from fastapi import Depends, FastAPI, HTTPException, Query ,status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from backend.database import engine
@@ -13,21 +14,24 @@ app = FastAPI(
     version="0.1.0",
 )
 
+class ChatRequest(BaseModel):
+    messages: list[dict[str, str]]
+
 @app.post("/api/v1/llm")
-async def ask_llm(prompt: str):
+async def ask_llm(request: ChatRequest):
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "http://localhost:11434/api/generate",
+            "http://localhost:11434/api/chat",
             json={
                 "model": "qwen2.5:3b",
-                "prompt": prompt,
+                "messages": request.messages,
                 "stream": False,
             },
             timeout=120.0,
         )
 
     response.raise_for_status()
-    return {"response": response.json()["response"]}
+    return {"response": response.json()["message"]["content"]}
 
 
 def get_db():
