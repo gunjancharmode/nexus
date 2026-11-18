@@ -1,6 +1,6 @@
 
 from backend.database import engine
-from backend.models import Base, Customer
+from backend.models import Base, Customer, Conversation, Message
 
 Base.metadata.create_all(bind=engine)
 

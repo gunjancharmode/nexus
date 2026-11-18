@@ -2,6 +2,7 @@ import httpx
 from fastapi import Depends, FastAPI, HTTPException, Query ,status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from backend.routers.conversations import router as conversations_router
 
 from backend.database import engine
 from backend.models import Base, Customer
@@ -11,8 +12,10 @@ from backend.session import SessionLocal
 app = FastAPI(
     title="NEXUS API",
     description="Enterprise AI platform API",
-    version="0.1.0",
+    version="0.1.0",    
 )
+
+app.include_router(conversations_router)
 
 class ChatRequest(BaseModel):
     messages: list[dict[str, str]]
@@ -108,6 +111,3 @@ def list_customers(
     )
 
     return customers
-
-
-
