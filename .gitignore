@@ -36,3 +36,12 @@ artifacts/
 .idea/
 .DS_Store
 Thumbs.db
+
+# IDE
+.vscode/
+
+# ChromaDB
+chroma_data/
+
+# Uploaded documents
+storage/uploads/

@@ -33,3 +33,27 @@ class MessageResponse(BaseModel):
     conversation_id: int
     role: str
     content: str
+
+class UserRegister(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+    
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    email: EmailStr
+    is_active: bool
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str

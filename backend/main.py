@@ -1,13 +1,15 @@
-import httpx
+
 from fastapi import Depends, FastAPI, HTTPException, Query ,status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from backend.routers.conversations import router as conversations_router
-
+from backend.services.ollama_service import generate_response
 from backend.database import engine
 from backend.models import Base, Customer
 from backend.schemas import CustomerCreate, CustomerResponse
 from backend.session import SessionLocal
+from backend.routers.auth import router as auth_router
+from backend.routers.documents import router as documents_router
 
 app = FastAPI(
     title="NEXUS API",
@@ -16,25 +18,19 @@ app = FastAPI(
 )
 
 app.include_router(conversations_router)
+app.include_router(auth_router)
+app.include_router(conversations_router)
+app.include_router(auth_router)
+app.include_router(documents_router)
 
 class ChatRequest(BaseModel):
     messages: list[dict[str, str]]
 
+
 @app.post("/api/v1/llm")
 async def ask_llm(request: ChatRequest):
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "http://localhost:11434/api/chat",
-            json={
-                "model": "qwen2.5:3b",
-                "messages": request.messages,
-                "stream": False,
-            },
-            timeout=120.0,
-        )
-
-    response.raise_for_status()
-    return {"response": response.json()["message"]["content"]}
+    ai_response = await generate_response(request.messages)
+    return {"response": ai_response}
 
 
 def get_db():
